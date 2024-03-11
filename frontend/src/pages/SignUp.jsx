@@ -20,7 +20,7 @@ const SignUp = () => {
   const handleData = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3000/signUp", {
+      const response = await fetch("http://localhost:3000/api/signUp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,7 +31,7 @@ const SignUp = () => {
       const userData = await response.json();
       if (response.status === 201) {
         console.log(userData);
-        localStorage.setItem("jwt", userData.jwt);
+        // localStorage.setItem("jwt", userData.jwt);
         navigate("/user/signIn");
       } else {
         console.log("user error");

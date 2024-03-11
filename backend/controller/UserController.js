@@ -60,7 +60,7 @@ const signInUser = async (request, response) => {
       const authUser = await bcrypt.compare(password, user.password);
       if (authUser) {
         const token = await jwt.sign(
-          { id: authUser._id, email: authUser.email },
+          { id: user._id, email: user.email },
           "secret",
           { expiresIn: "24h" }
         );
