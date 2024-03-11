@@ -33,7 +33,7 @@ const signUpUser = async (request, response) => {
           console.log(token);
           return response.status(201).json({
             message: "user is created",
-            user: newUser,
+            user: newUser.email,
             jwt: token,
           });
         }
