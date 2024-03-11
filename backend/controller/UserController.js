@@ -14,7 +14,7 @@ const signUpUser = async (request, response) => {
         message: "user already exist",
       });
     } else {
-      const salt = bcrypt.genSalt(10);
+      const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
       const newUser = await UserModel.create({
         username,
@@ -22,9 +22,13 @@ const signUpUser = async (request, response) => {
         password: hashedPassword,
       });
       if (newUser) {
-        const token = await jwt.sign({ id: newUser._id }, "secret", {
-          expiresIn: "1h",
-        });
+        const token = await jwt.sign(
+          { id: newUser._id, email: newUser.email, username: newUser.username },
+          "secret",
+          {
+            expiresIn: "1h",
+          }
+        );
         if (token) {
           console.log(token);
           return response.status(201).json({
