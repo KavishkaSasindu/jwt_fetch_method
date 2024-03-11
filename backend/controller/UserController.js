@@ -51,4 +51,44 @@ const signUpUser = async (request, response) => {
   }
 };
 
-module.exports = { signUpUser };
+// signIn user
+const signInUser = async (request, response) => {
+  const { email, password } = request.body;
+  try {
+    const user = await UserModel.findOne({ email });
+    if (user) {
+      const authUser = await bcrypt.compare(password, user.password);
+      if (authUser) {
+        const token = await jwt.sign(
+          { id: authUser._id, email: authUser.email },
+          "secret",
+          { expiresIn: "24h" }
+        );
+        if (!token) {
+          return response.status(400).json({
+            message: "token not created",
+          });
+        }
+        return response.status(200).json({
+          message: "user found and logged in",
+          jwt: token,
+          user: authUser.email,
+        });
+      } else {
+        return response.status(400).json({
+          message: "password incorrect",
+        });
+      }
+    } else {
+      return response.status(400).json({
+        message: "user not found",
+      });
+    }
+  } catch (error) {
+    return response.status(404).json({
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { signUpUser, signInUser };
